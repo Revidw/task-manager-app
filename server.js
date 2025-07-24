@@ -122,7 +122,7 @@ app.patch("/update", protect, async (req, res) => {
 
         if (password) {
             const hashedPassword = await bcrypt.hash(password, 10);
-            patches.push(`password=$${index}`)
+            patches.push(`password_hash=$${index}`)
             fields.push(hashedPassword)
             index++
         }

@@ -1,45 +1,47 @@
 # Task Manager API
 
-A secure REST API built with **Node.js, Express, and PostgreSQL** for user authentication and task management.  
+A secure REST API built with **Node.js, Express, and PostgreSQL** for user authentication and task management.\
 Implements **JWT authentication**, **bcrypt password hashing**, and security features like **Helmet** and **CORS**.
 
 ---
 
 ## **Features**
-- User registration and login with JWT authentication.
-- Password hashing using **bcrypt**.
-- CRUD operations for tasks, scoped to each authenticated user.
-- Profile management (update user info).
-- Security via **Helmet**, **CORS**, and proper error handling.
+
+- User registration and login with JWT authentication
+- Password hashing using **bcrypt**
+- CRUD operations for tasks, scoped to each authenticated user
+- User profile update via `PATCH /update` (partial updates supported)
+- Security best practices: **Helmet**, **CORS**, and robust error handling
 
 ---
 
 ## **Tech Stack**
+
 - **Node.js / Express**
-- **PostgreSQL** (with `pg` for queries)
+- **PostgreSQL** (using `pg` for database access)
 - **bcryptjs** for password hashing
-- **JWT** for authentication
-- **Helmet & CORS** for security
-- **dotenv** for environment variables
+- **JWT** for stateless authentication
+- **Helmet & CORS** for API hardening
+- **dotenv** for environment variable management
 
 ---
 
 ## **Installation**
 
 ```bash
-# Clone repository
+# Clone the repository
 git clone https://github.com/your-username/task-manager-api.git
 cd task-manager-api
 
 # Install dependencies
 npm install
 
-# Create .env file
+# Create .env file with the following content:
 PORT=3000
 JWT_SECRET=your_jwt_secret
 DATABASE_URL=postgres://user:password@localhost:5432/taskdb
 
-# Run server
+# Run the development server
 npm run dev
 ```
 
@@ -48,11 +50,15 @@ npm run dev
 ## **API Endpoints**
 
 ### **Authentication**
+
 #### **Register**
+
 ```
 POST /register
 ```
+
 **Body:**
+
 ```json
 {
   "name": "John Doe",
@@ -60,7 +66,9 @@ POST /register
   "password": "password123"
 }
 ```
+
 **Response:**
+
 ```json
 {
   "id": 1,
@@ -71,10 +79,13 @@ POST /register
 ```
 
 #### **Login**
+
 ```
 POST /login
 ```
+
 **Body:**
+
 ```json
 {
   "email": "john@example.com",
@@ -85,24 +96,33 @@ POST /login
 ---
 
 ### **User**
+
 #### **Get Profile**
+
 ```
 GET /profile
 ```
+
 **Headers:**
+
 ```
 Authorization: Bearer <jwt_token>
 ```
 
 #### **Update Profile**
+
 ```
-PUT /update
+PATCH /update
 ```
+
 **Headers:**
+
 ```
 Authorization: Bearer <jwt_token>
 ```
-**Body:**
+
+**Body (any combination of these fields is allowed):**
+
 ```json
 {
   "name": "John Smith",
@@ -114,15 +134,21 @@ Authorization: Bearer <jwt_token>
 ---
 
 ### **Tasks**
+
 #### **Create Task**
+
 ```
 POST /tasks
 ```
+
 **Headers:**
+
 ```
 Authorization: Bearer <jwt_token>
 ```
+
 **Body:**
+
 ```json
 {
   "title": "Buy groceries",
@@ -131,23 +157,31 @@ Authorization: Bearer <jwt_token>
 ```
 
 #### **Get All Tasks**
+
 ```
 GET /tasks
 ```
+
 **Headers:**
+
 ```
 Authorization: Bearer <jwt_token>
 ```
 
 #### **Update Task**
+
 ```
 PUT /tasks/:id
 ```
+
 **Headers:**
+
 ```
 Authorization: Bearer <jwt_token>
 ```
+
 **Body:**
+
 ```json
 {
   "title": "Go Shopping",
@@ -156,10 +190,13 @@ Authorization: Bearer <jwt_token>
 ```
 
 #### **Delete Task**
+
 ```
 DELETE /tasks/:id
 ```
+
 **Headers:**
+
 ```
 Authorization: Bearer <jwt_token>
 ```
@@ -169,6 +206,7 @@ Authorization: Bearer <jwt_token>
 ## **Database Schema**
 
 ### **Users Table**
+
 ```sql
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -180,6 +218,7 @@ CREATE TABLE users (
 ```
 
 ### **Tasks Table**
+
 ```sql
 CREATE TABLE tasks (
     id SERIAL PRIMARY KEY,
@@ -192,4 +231,6 @@ CREATE TABLE tasks (
 ---
 
 ## **License**
+
 MIT License
+
