@@ -95,20 +95,52 @@ app.post("/login", async (req, res) => {
     }
 })
 
-app.put("/update", protect, async (req, res) => {
+app.patch("/update", protect, async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        const normalizedEmail = email.trim().toLowerCase();
-        if (!name || !email || !password) {
-            return res.status(400).json({ message: "Please provide all fields" });
+        const fields = [];
+        const patches = [];
+        let index = 1
+
+        if (!name && !email && !password) {
+            return res.status(400).json({ message: "Please provide atleast one valid field to update" })
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await db.query("UPDATE users SET name=$1, email=$2, password_hash=$3 WHERE id=$4", [name, normalizedEmail, hashedPassword, req.user.id])
+
+        if (name) {
+            patches.push(`name=$${index}`)
+            fields.push(name)
+            index++
+        }
+
+        if (email) {
+            // TODO: Check if email is already taken before updating
+            patches.push(`email=$${index}`)
+            fields.push(email.trim().toLowerCase())
+            index++
+        }
+
+
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            patches.push(`password=$${index}`)
+            fields.push(hashedPassword)
+            index++
+        }
+
+        fields.push(req.user.id)
+
+
+        const joinedPatches = patches.join(", ")
+        const query = `UPDATE users SET ${joinedPatches} WHERE id = $${index} RETURNING id, name, email`;
+        const result = await db.query(query, fields);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "User not found." });
+        }
 
         return res.json({
-            id: req.user.id,
-            name: name,
-            email: email,
+            user: result.rows[0],
+            message: "User Updated Successfully."
         });
     } catch (error) {
         console.error(error);
